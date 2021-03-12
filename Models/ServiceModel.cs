@@ -26,7 +26,7 @@ namespace ServiceRequests.Models
         public string LastModifiedBy { get; set; }    //: string
         [Required]
         [DataType(DataType.DateTime)]
-        public DateTime LastModifiedDate { get; set; }  //: dateTime
+        public DateTime LastModifiedDate { get; set; } = DateTime.UtcNow ; //: dateTime 
 
         public ServiceModel Copy(ServiceModel _serviceModel)
         {
@@ -36,7 +36,7 @@ namespace ServiceRequests.Models
             this.CreatedBy = _serviceModel.CreatedBy;
             this.CreatedDate = _serviceModel.CreatedDate;
             this.LastModifiedBy = _serviceModel.LastModifiedBy;
-            this.LastModifiedDate = _serviceModel.LastModifiedDate;
+            this.LastModifiedDate = _serviceModel.LastModifiedDate = DateTime.UtcNow;
             return this;
         }
     }
