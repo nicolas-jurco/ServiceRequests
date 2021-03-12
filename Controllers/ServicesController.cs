@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ServiceRequests.Models;
 using ServiceRequests.Service;
+using ServiceRequests.Services;
 
 namespace ServiceRequests.Controllers
 {
@@ -15,17 +16,25 @@ namespace ServiceRequests.Controllers
     public class ServicesController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IEmailServices _emailServices;
 
         //Injected logger to use swagger and context to use db
-        public ServicesController(DatabaseContext context, ILogger<ServicesController> logger)
+        //Email injection is only being used to fulfill requested items from challenge. Other solutions might be possible.
+        public ServicesController(DatabaseContext context, ILogger<ServicesController> logger
+            , IEmailServices emailServices)
         {
             _logger = logger;
             _context = context;
+            _emailServices = emailServices;
         }
 
         private readonly ILogger<ServicesController> _logger;
 
         // GET: ServiceModels
+        /// <summary>
+        /// Read all service requests
+        /// </summary>
+        /// <returns>200:list of service requests || 204: empty content</returns>
         [HttpGet]
         [Route("api/[controller]/[action]")]
         public ActionResult<ServiceModel> Index()
@@ -37,6 +46,11 @@ namespace ServiceRequests.Controllers
         }
 
         // GET: ServiceModels/Details/5
+        /// <summary>
+        /// Read service request by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>200: single service request || 404: not found</returns>
         [HttpGet]
         [Route("api/[controller]/[action]")]
         public async Task<ActionResult> Details(Guid? id)
@@ -49,6 +63,11 @@ namespace ServiceRequests.Controllers
 
 
         // POST: ServiceModels/Create
+        /// <summary>
+        /// Create new service request
+        /// </summary>
+        /// <param name="serviceModel"></param>
+        /// <returns>201: created service request with id || 400: bad request</returns>
         [HttpPost]
         [Route("api/[controller]/[action]")]
         public async Task<ActionResult> Create([Bind("Id,BuildingCode,Description,CurrentStatus,CreatedBy,CreatedDate,LastModifiedBy,LastModifiedDate")] ServiceModel _serviceModel)
@@ -67,6 +86,11 @@ namespace ServiceRequests.Controllers
 
         }
 
+        /// <summary>
+        /// Update service request based on id
+        /// </summary>
+        /// <param name="serviceModel"></param>
+        /// <returns>200: updated service request || 400: bad service request || 404: not found</returns>
         [HttpPut]
         [Route("api/[controller]/[action]")]
         public async Task<ActionResult> Update([Bind("Id,BuildingCode,Description,CurrentStatus,CreatedBy,CreatedDate,LastModifiedBy,LastModifiedDate")] ServiceModel _serviceModel)
@@ -84,6 +108,8 @@ namespace ServiceRequests.Controllers
                 {
                     _context.Update(serviceModel.Copy(_serviceModel));
                     await _context.SaveChangesAsync();
+                    if(_serviceModel.CurrentStatus == CurrentStatus.Canceled || _serviceModel.CurrentStatus == CurrentStatus.Complete)
+                        _emailServices.SendEmail(serviceModel);
                 }
                 catch (Exception)
                 {
@@ -94,6 +120,11 @@ namespace ServiceRequests.Controllers
         }
 
         // DELETE: ServiceModels/Delete/5
+        /// <summary>
+        /// Delete service request based on id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>201: successful || 404: not found </returns>
         [HttpDelete]
         [Route("api/[controller]/[action]")]
         public async Task<ActionResult> Delete(Guid? id)
