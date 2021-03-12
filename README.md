@@ -12,5 +12,7 @@ Since the interpretation of the challenge was on my side, and it was not possibl
 * All requests will have a response with the CODE, and the result will also contain the involved object
 * No view is involved on the project
 * Emails will be sent after a PUT request updates to Enum Complete
+* SQLite does not work with Date Types, so validation will be done before insert or update (when working with other SQL engines, this is not necessary)
+
 
 // to complete

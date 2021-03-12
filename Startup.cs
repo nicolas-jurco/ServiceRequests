@@ -33,6 +33,14 @@ namespace ServiceRequests
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ServiceRequests", Version = "v1" });
             });
+            #region SQLite
+            /*To use SQLite*/
+            services.AddDbContext<Service.DatabaseContext>(options =>
+                    options.UseSqlite("Filename=test.db", options =>
+                    {
+                        options.MigrationsAssembly(System.Reflection.Assembly.GetExecutingAssembly().FullName);
+                    }));
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
