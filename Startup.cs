@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ServiceRequests.Services;
 
 namespace ServiceRequests
 {
@@ -41,6 +42,12 @@ namespace ServiceRequests
                         options.MigrationsAssembly(System.Reflection.Assembly.GetExecutingAssembly().FullName);
                     }));
             #endregion
+            // Allow handling of Enums as string on jsons requests and response
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+            });
+            services.AddSingleton<IEmailServices, EmailServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
