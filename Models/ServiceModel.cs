@@ -27,6 +27,18 @@ namespace ServiceRequests.Models
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime LastModifiedDate { get; set; }  //: dateTime
+
+        public ServiceModel Copy(ServiceModel _serviceModel)
+        {
+            this.BuildingCode = _serviceModel.BuildingCode;
+            this.Description = _serviceModel.Description;
+            this.CurrentStatus = _serviceModel.CurrentStatus;
+            this.CreatedBy = _serviceModel.CreatedBy;
+            this.CreatedDate = _serviceModel.CreatedDate;
+            this.LastModifiedBy = _serviceModel.LastModifiedBy;
+            this.LastModifiedDate = _serviceModel.LastModifiedDate;
+            return this;
+        }
     }
     public enum CurrentStatus { NotApplicable, Created, InProgress, Complete, Canceled }
 }
