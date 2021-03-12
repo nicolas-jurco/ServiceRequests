@@ -15,3 +15,8 @@ Since the interpretation of the challenge was on my side, and it was not possibl
 * SQLite does not work with Date Types, so validation will be done before insert or update (when working with other SQL engines, this is not necessary)
 
 * To test email sender, please modify the information from appsettings.json
+
+### SQLite
+Please refer to https://sqlite.org/download.html  to download binaries and handle .db from cmd
+Or
+Refer to https://sqlitebrowser.org/ to handle .db from GUI
